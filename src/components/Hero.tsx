@@ -12,10 +12,23 @@ const Hero: React.FC = () => {
       id="hero" 
       className="relative text-white min-h-screen flex flex-col justify-end items-center overflow-hidden bg-linknet-blue"
     >
+      {/* Fundo para Desktop e Telas Maiores */}
       <div 
-        className="absolute inset-0 bg-cover bg-center" 
+        className="hidden sm:block absolute inset-0 bg-cover bg-center" 
         style={{ backgroundImage: 'url(https://res.cloudinary.com/dtuacdvn6/image/upload/v1756932000/image_2025-09-03_173903460_eszvlm.png)' }}
       >
+      </div>
+
+      {/* Fundo Apenas para Celular (com o logo) */}
+      <div className="sm:hidden absolute inset-0 flex items-center justify-center z-0">
+        <motion.img
+          src="https://res.cloudinary.com/dtuacdvn6/image/upload/v1756930974/image_2025-09-03_172251868_oo34w5.png"
+          alt="Linknet Palmares Logo"
+          className="w-48 opacity-50 transform -translate-y-1/4"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.5, scale: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
+        />
       </div>
       
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center pb-24">

@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, PlusCircle, ArrowLeft, ArrowRight } from 'lucide-react';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-
+import { CheckCircle, PlusCircle } from 'lucide-react';
 import { plans } from '../data/content';
 import { openWhatsApp } from '../utils/whatsapp';
 import ShapeDivider from './ShapeDivider';
@@ -129,25 +124,7 @@ const PlanCard = ({ plan, options, onOptionChange, totalPrice, index }: any) => 
     </motion.div>
   );
 };
-
-
-const SwiperNavButtons = () => {
-    const swiper = useSwiper();
   
-    return (
-      <div className="flex justify-center items-center space-x-4 mt-8">
-        <button onClick={() => swiper.slidePrev()} className="bg-white p-3 rounded-full shadow-md text-linknet-blue hover:bg-gray-100 transition-colors">
-            <ArrowLeft size={24}/>
-        </button>
-        <div className="swiper-pagination-custom text-linknet-blue font-semibold"></div>
-        <button onClick={() => swiper.slideNext()} className="bg-white p-3 rounded-full shadow-md text-linknet-blue hover:bg-gray-100 transition-colors">
-            <ArrowRight size={24}/>
-        </button>
-      </div>
-    );
-  };
-  
-
 const PlansSection: React.FC = () => {
   const [options, setOptions] = useState<PlanOptions>({});
 
@@ -182,8 +159,7 @@ const PlansSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Grid para Telas Grandes (Desktop) */}
-        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {plans.map((plan, index) => (
             <PlanCard
               key={plan.id}
@@ -194,43 +170,6 @@ const PlansSection: React.FC = () => {
               index={index}
             />
           ))}
-        </div>
-
-        {/* Carrossel para Telas Pequenas (Mobile/Tablet) */}
-        <div className="block lg:hidden">
-          <Swiper
-            modules={[Navigation, Pagination]}
-            spaceBetween={30}
-            slidesPerView={1}
-            pagination={{ 
-                el: '.swiper-pagination-custom',
-                clickable: true, 
-                type: 'bullets'
-            }}
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              768: {
-                slidesPerView: 2,
-                spaceBetween: 30,
-              },
-            }}
-          >
-            {plans.map((plan, index) => (
-              <SwiperSlide key={plan.id} style={{ height: 'auto' }}>
-                <PlanCard
-                  plan={plan}
-                  options={options}
-                  onOptionChange={handleOptionChange}
-                  totalPrice={calculateTotalPrice(plan)}
-                  index={index}
-                />
-              </SwiperSlide>
-            ))}
-             <SwiperNavButtons />
-          </Swiper>
         </div>
       </div>
     </section>
