@@ -1,10 +1,49 @@
-import { Wifi, Zap, Award, Headphones } from 'lucide-react';
+import { Wifi, Zap, Award, Headphones, Tv } from 'lucide-react';
 
 export const plans = [
-  { id: 'plan-300', speed: '300', ideal: 'Navegar e Redes Sociais', price: 'R$ 65,00', popular: true, benefits: ['Wi-Fi 6', 'Atendimento digital', 'Instalação grátis', '100% fibra óptica'] },
-  { id: 'plan-600', speed: '600', ideal: 'Streaming e Jogos', price: 'R$ 79,90', popular: false, benefits: ['Wi-Fi 6', 'LinknetTV', 'Atendimento digital', 'Instalação grátis', '100% fibra óptica'] },
-  { id: 'plan-1000', speed: '1000', ideal: 'Home Office e Família', price: 'R$ 179,90', popular: false, benefits: ['Wi-Fi 6', 'LinknetTV', 'Atendimento digital', 'Instalação grátis', '100% fibra óptica'] },
+  { 
+    id: 'plan-200', 
+    speed: '200', 
+    ideal: 'Redes sociais e pesquisas', 
+    price: 54.90, 
+    popular: false, 
+    benefits: ['Atendimento digital', 'Wi-Fi Turbo 6.0', 'Instalação Grátis', '100% fibra óptica'] 
+  },
+  { 
+    id: 'plan-300', 
+    speed: '300', 
+    ideal: 'Navegar e Redes Sociais', 
+    price: 64.90, 
+    popular: true, 
+    benefits: ['Atendimento digital', 'Wi-Fi Turbo 6.0', 'Instalação Grátis', '100% fibra óptica'] 
+  },
+  { 
+    id: 'plan-600', 
+    speed: '600', 
+    ideal: 'Streaming em 4K e jogos', 
+    price: 79.90, 
+    popular: false, 
+    benefits: ['Atendimento digital', 'Wi-Fi Turbo 6.0', 'Instalação Grátis', '100% fibra óptica'] 
+  },
+  { 
+    id: 'plan-600-tv', 
+    speed: '600', 
+    ideal: 'Streaming + Pacote de Canais', 
+    price: 99.99, 
+    popular: false, 
+    benefits: ['Pacote de Canais Incluso', 'Atendimento digital', 'Wi-Fi Turbo 6.0', 'Instalação Grátis', '100% fibra óptica'],
+    hasChannels: true
+  },
+  { 
+    id: 'plan-1000', 
+    speed: '1000', 
+    ideal: 'Uso intenso e família conectada', 
+    price: 179.90, 
+    popular: false, 
+    benefits: ['Atendimento digital', 'Wi-Fi Turbo 6.0', 'Instalação Grátis', '100% fibra óptica'] 
+  },
 ];
+
 
 export const advantages = [
   { id: 'adv-fibra', icon: <Wifi className="w-12 h-12" />, title: '100% Fibra Óptica', description: 'Leve a fibra diretamente até sua casa, garantindo máxima velocidade e estabilidade.' },

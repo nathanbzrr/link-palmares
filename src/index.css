@@ -18,3 +18,26 @@ body {
     0 0 5px rgba(255, 221, 0, 0.5),
     0 0 10px rgba(255, 221, 0, 0.3);
 }
+
+/* Estilos para o Swiper */
+.swiper-pagination-custom {
+  display: flex; /* Adicionado */
+  align-items: center; /* Adicionado */
+  min-height: 50px; /* Adicionado para igualar a altura dos botões */
+}
+.swiper-pagination-custom .swiper-pagination-bullet {
+    background-color: #0488c7;
+    width: 12px;
+    height: 12px;
+    opacity: 0.5;
+    transition: opacity 0.3s, background-color 0.3s;
+}
+  
+.swiper-pagination-custom .swiper-pagination-bullet-active {
+    opacity: 1;
+    background-color: #0a1a4c;
+}
+
+.swiper-slide {
+    height: auto;
+}

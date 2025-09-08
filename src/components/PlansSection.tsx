@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, PlusCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 import { plans } from '../data/content';
 import { openWhatsApp } from '../utils/whatsapp';
 import ShapeDivider from './ShapeDivider';
@@ -19,7 +24,151 @@ const cardVariants = {
   }),
 };
 
+interface PlanOptions {
+  [key: string]: {
+    router?: boolean;
+    channels?: boolean;
+  };
+}
+
+const PlanCard = ({ plan, options, onOptionChange, totalPrice, index }: any) => {
+  const currentOptions = options[plan.id] || {};
+
+  return (
+    <motion.div
+      id={plan.id}
+      className={`relative bg-white/70 backdrop-blur-md rounded-3xl shadow-xl border transition-all duration-300 hover:shadow-2xl hover:border-linknet-blue flex flex-col h-full ${
+        plan.popular ? 'ring-2 ring-linknet-blue border-linknet-blue' : 'border-linknet-gray-medium'
+      }`}
+      custom={index}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={cardVariants}
+      whileHover={{ y: -5 }}
+    >
+      {plan.popular && (
+        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+          <span className="bg-linknet-blue text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg">
+            Mais Popular
+          </span>
+        </div>
+      )}
+      <div className="p-8 text-center flex-grow flex flex-col">
+        <div className="mb-4">
+          <div className="text-5xl font-extrabold text-linknet-blue mb-2 leading-none">
+            {plan.speed}
+            <span className="text-xl font-bold text-gray-500 ml-1">MEGA</span>
+          </div>
+          <div className="text-lg text-linknet-gray-dark font-medium h-12 flex items-center justify-center">{plan.ideal}</div>
+        </div>
+        
+        <ul className="space-y-3 mb-6 text-left text-linknet-gray-dark flex-grow">
+          {plan.benefits.map((benefit: string, bIndex: number) => (
+            <li key={bIndex} className="flex items-center">
+              <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span>{benefit}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="border-t border-gray-200 pt-4 space-y-3 mt-auto">
+          <label className="flex items-center cursor-pointer w-full">
+            <PlusCircle className="w-4 h-4 mr-2 text-linknet-gray-dark flex-shrink-0" />
+            <span className="flex-grow text-sm text-linknet-gray-dark text-left">
+              Roteador Adicional
+            </span>
+            <span className="text-sm font-semibold mr-3 text-linknet-gray-dark">+ R$ 30,00</span>
+            <input
+              type="checkbox"
+              checked={!!currentOptions.router}
+              onChange={() => onOptionChange(plan.id, 'router')}
+              className="h-5 w-5 rounded border-gray-300 text-linknet-blue focus:ring-linknet-blue"
+            />
+          </label>
+          {!plan.hasChannels && (
+            <label className="flex items-center cursor-pointer w-full">
+              <PlusCircle className="w-4 h-4 mr-2 text-linknet-gray-dark flex-shrink-0" />
+              <span className="flex-grow text-sm text-linknet-gray-dark text-left">
+                Pacote de Canais
+              </span>
+              <span className="text-sm font-semibold mr-3 text-linknet-gray-dark">+ R$ 30,00</span>
+              <input
+                type="checkbox"
+                checked={!!currentOptions.channels}
+                onChange={() => onOptionChange(plan.id, 'channels')}
+                className="h-5 w-5 rounded border-gray-300 text-linknet-blue focus:ring-linknet-blue"
+              />
+            </label>
+          )}
+        </div>
+      </div>
+
+      <div className="p-8 pt-4 text-center">
+        <div className="text-sm text-gray-600">Valor total</div>
+        <div className={`text-4xl font-bold ${plan.popular ? 'text-linknet-blue' : 'text-linknet-gray-dark'} mb-6`}>
+          R$ {totalPrice.toFixed(2).replace('.', ',')}
+          <span className="text-xl font-medium text-gray-500">/mês</span>
+        </div>
+        <button
+          onClick={() => openWhatsApp({ 
+            planSpeed: plan.speed, 
+            planIdeal: plan.ideal,
+            totalPrice: totalPrice, 
+            options: currentOptions 
+          })}
+          className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-md ${
+            plan.popular
+              ? 'bg-linknet-blue hover:bg-linknet-blue/90 text-white'
+              : 'bg-linknet-yellow hover:bg-linknet-yellow/90 text-linknet-blue'
+          }`}
+        >
+          Contratar Agora
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+
+const SwiperNavButtons = () => {
+    const swiper = useSwiper();
+  
+    return (
+      <div className="flex justify-center items-center space-x-4 mt-8">
+        <button onClick={() => swiper.slidePrev()} className="bg-white p-3 rounded-full shadow-md text-linknet-blue hover:bg-gray-100 transition-colors">
+            <ArrowLeft size={24}/>
+        </button>
+        <div className="swiper-pagination-custom text-linknet-blue font-semibold"></div>
+        <button onClick={() => swiper.slideNext()} className="bg-white p-3 rounded-full shadow-md text-linknet-blue hover:bg-gray-100 transition-colors">
+            <ArrowRight size={24}/>
+        </button>
+      </div>
+    );
+  };
+  
+
 const PlansSection: React.FC = () => {
+  const [options, setOptions] = useState<PlanOptions>({});
+
+  const handleOptionChange = (planId: string, option: 'router' | 'channels') => {
+    setOptions(prev => ({
+      ...prev,
+      [planId]: {
+        ...prev[planId],
+        [option]: !prev[planId]?.[option],
+      },
+    }));
+  };
+
+  const calculateTotalPrice = (plan: typeof plans[0]) => {
+    let total = plan.price;
+    const planOptions = options[plan.id] || {};
+    if (planOptions.router) total += 30;
+    if (planOptions.channels && !plan.hasChannels) total += 30;
+    return total;
+  };
+
   return (
     <section id="plans" className="relative py-24 bg-linknet-yellow">
       <ShapeDivider position="top" color="#FFFFFF" />
@@ -32,61 +181,56 @@ const PlansSection: React.FC = () => {
             Internet de fibra óptica com desempenho incomparável para sua casa ou negócio.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {/* Grid para Telas Grandes (Desktop) */}
+        <div className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {plans.map((plan, index) => (
-            <motion.div
-              key={index}
-              id={plan.id}
-              className={`relative bg-white/70 backdrop-blur-md rounded-3xl shadow-xl border border-linknet-gray-medium transition-all duration-300 hover:shadow-2xl hover:border-linknet-blue ${
-                plan.popular ? 'ring-2 ring-linknet-yellow border-linknet-yellow' : ''
-              }`}
-              custom={index}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={cardVariants}
-              whileHover={{ y: -5 }}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-linknet-yellow text-linknet-blue px-5 py-2 rounded-full text-sm font-semibold shadow-lg">
-                    Plano Promocional
-                  </span>
-                </div>
-              )}
-              <div className="p-8 text-center">
-                <div className="mb-4">
-                  <div className="text-5xl font-extrabold text-linknet-blue mb-2 leading-none">
-                    {plan.speed}
-                    <span className="text-xl font-bold text-gray-500 ml-1">MEGA</span>
-                  </div>
-                  <div className="text-lg text-linknet-gray-dark font-medium">{plan.ideal}</div>
-                </div>
-                <div className={`text-4xl font-bold ${plan.popular ? 'text-linknet-blue' : 'text-linknet-gray-dark'} mb-6`}>
-                  {plan.price}
-                  <span className="text-xl font-medium text-gray-500">/mês</span>
-                </div>
-                <ul className="space-y-3 mb-8 text-left text-linknet-gray-dark">
-                  {plan.benefits.map((benefit, bIndex) => (
-                    <li key={bIndex} className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={() => openWhatsApp(plan.speed)}
-                  className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-md ${
-                    plan.popular
-                      ? 'bg-linknet-yellow hover:bg-linknet-yellow/90 text-linknet-blue'
-                      : 'bg-linknet-blue hover:bg-linknet-blue/90 text-white'
-                  }`}
-                >
-                  Contratar Agora
-                </button>
-              </div>
-            </motion.div>
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              options={options}
+              onOptionChange={handleOptionChange}
+              totalPrice={calculateTotalPrice(plan)}
+              index={index}
+            />
           ))}
+        </div>
+
+        {/* Carrossel para Telas Pequenas (Mobile/Tablet) */}
+        <div className="block lg:hidden">
+          <Swiper
+            modules={[Navigation, Pagination]}
+            spaceBetween={30}
+            slidesPerView={1}
+            pagination={{ 
+                el: '.swiper-pagination-custom',
+                clickable: true, 
+                type: 'bullets'
+            }}
+            breakpoints={{
+              640: {
+                slidesPerView: 2,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 2,
+                spaceBetween: 30,
+              },
+            }}
+          >
+            {plans.map((plan, index) => (
+              <SwiperSlide key={plan.id} style={{ height: 'auto' }}>
+                <PlanCard
+                  plan={plan}
+                  options={options}
+                  onOptionChange={handleOptionChange}
+                  totalPrice={calculateTotalPrice(plan)}
+                  index={index}
+                />
+              </SwiperSlide>
+            ))}
+             <SwiperNavButtons />
+          </Swiper>
         </div>
       </div>
     </section>
